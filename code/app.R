@@ -9,8 +9,9 @@ library(patchwork)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
+    tabsetPanel(
+      tabPanel('Dynamic Learning Environment',
     # Application title
-    titlePanel(h1("Basic Reinforcement Learning Tutorial")),
     titlePanel(h4(HTML(paste(
                     "This is an introduction to creating a basic algorithm that learns the value of its environment.",
                   "<br/>",
@@ -18,32 +19,17 @@ ui <- fluidPage(
                   On each trial it samples a card to learn whether it gained a reward.
                   Over time the agent will come to learn which card will give it most reward; the
                   agent will seek to maximise its return.",
-                  "<br/>",
-                  "The way in which the agent acts upon the environment to maximise its return is to convert its beliefs into actions",
-                  "<br/>",
-                  "<i><center> Beliefs </i> &#8594; <i> Actions </i></center>",
-                  "<br/>",
-                  "The rate at which the agent will explore its environment, generate new beliefs, and make optimised actions is governed by two parameters:
-                  a learning rate (how quickly an agent learns from each reward) and a decision temperature (how noisily an agent chooses
-                  between each option)",sep="<br/>")))),
-
-    titlePanel(h4("This agent uses the following equations:")),
-    br(),
-    withMathJax(),
-      tabPanel(
-      title = "Diagnostics",
-      h4(textOutput("diagTitle")),
-      uiOutput("formula")
-      ),
+                  "<br/>")))),
     br(),
     titlePanel(h4(HTML(paste("Move the sliders to change the task structure and agent policy.",
-                  "<br/>",
-                  "The black dashed line is the probability that the agent will choose Card 1,
-                  and the coloured lines are the internal beliefs the agent holds about the value of each card.",
-                  "</br/>",
-                  "Click 'Select a new agent' to start a new agent from scratch using the same settings",
-                  sep="<br/>")))),
+              "<br/>",
+              "The black dashed line is the probability that the agent will choose Card 1,
+              and the coloured lines are the internal beliefs the agent holds about the value of each card.",
+              "</br/>",
+              "Click 'Select a new agent' to start a new agent from scratch using the same settings",
+              sep="<br/>")))),
     br(),
+
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
@@ -64,17 +50,11 @@ ui <- fluidPage(
                         value = 1,
                         step = 0.1),
             br(),
-           # sliderInput("gamma",
-           #             HTML(paste("Discount Rate: (&gamma;)")),
-           #             min = 0,
-           #             max = 1,
-           #             value = 0,
-           #             step = 0.1),
             sliderInput("trials",
                         "Task Length:",
                         min = 50,
-                        max = 1000,
-                        value = 500,
+                        max = 500,
+                        value = 100,
                         step = 50),
             br(),
             sliderInput("winprob",
@@ -83,17 +63,37 @@ ui <- fluidPage(
                         max = 1,
                         value = 0.8,
                         step = 0.1),
-           br()#,
-           #actionButton("colour", "I'm bored of these colours")
+           br()
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
            plotOutput("distPlot", height = '700px', width = 'auto')
         )
+    )
     ),
 
-    titlePanel(h5(HTML(paste("CC <a href='https://www.joebarnby.com/'>Dr Joe M Barnby</a> 2022"))))
+    tabPanel(title = 'The Maths',
+    titlePanel(h4(HTML(paste("The way in which the agent acts upon the environment to maximise its return is to convert its beliefs into actions",
+                  "<br/>",
+                  "<i><center> Beliefs </i> &#8594; <i> Actions </i></center>",
+                  "<br/>",
+                  "The rate at which the agent will explore its environment, generate new beliefs, and make optimised actions is governed by two parameters:
+                  a learning rate (how quickly an agent learns from each reward) and a decision temperature (how noisily an agent chooses
+                  between each option)",sep="<br/>")))),
+    titlePanel(h4("This agent uses the following equations:")),
+    br(),
+    withMathJax(),
+      tabPanel(
+      title = "Diagnostics",
+      h4(textOutput("diagTitle")),
+      uiOutput("formula")
+      ),
+
+    )
+    ),
+
+    titlePanel(h5(HTML(paste("CC <a href='https://www.joebarnby.com/'>Team Hypatia</a> 2023"))))
 
 )
 
@@ -136,23 +136,19 @@ server <- function(input, output) {
         for (t in 1:trials){
 
           #sample an action
-          a1         <- exp(Q2[t,1]/tau)
-          a2         <- exp(Q2[t,2]/tau)
-          prob_a1[t] <- a1/(a1+a2)
-          a[t]       <- sample(c(1,2),  1, T, prob = c(prob_a1[t], 1-prob_a1[t]))
+          a1            <- exp(Q2[t,1]/tau)
+          a2            <- exp(Q2[t,2]/tau)
+          prob_a1[t]    <- a1/(a1+a2)
+          a[t]          <- sample(c(1,2),  1, T, prob = c(prob_a1[t], 1-prob_a1[t]))
 
           #sample a reward for the action
-          prob_r     <- R2[a[t],]
-          r[t]       <- sample(c(1, 0), 1, T, prob = prob_r)
+          prob_r        <- R2[a[t],]
+          r[t]          <- sample(c(1, 0), 1, T, prob = prob_r)
 
           #update
-          PE         <- r[t] - Q2[t, a[t]]
+          PE            <- r[t] - Q2[t, a[t]]
 
-          #if(input$gamma > 0){
-          #Q2[t+1, a[t]] <- Q2[t, a[t]] + lambda * (gamma * r + (max(Q2[t,]) - Q2[t, a[t]])) #RW equation w discount
-          #} else{
           Q2[t+1, a[t]] <- Q2[t, a[t]] + (lambda * PE) #RW equation
-          #}
           Q2[t+1,-a[t]] <- Q2[t,-a[t]]
 
         }

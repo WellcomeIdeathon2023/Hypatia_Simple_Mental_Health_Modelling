@@ -70,6 +70,16 @@ ui <- fluidPage(
         mainPanel(
            plotOutput("distPlot", height = '700px', width = 'auto')
         )
+    ),
+
+    sidebarLayout(
+    sidebarPanel(
+      downloadButton('downloadData', 'Download Data')
+    ),
+
+    mainPanel(
+      tableOutput('table')
+    )
     )
     ),
 
@@ -109,7 +119,7 @@ server <- function(input, output) {
                        "))
     })
 
-    output$distPlot <- renderPlot({
+    data <- reactive({
 
         # generate bins based on input$bins from ui.R
         trials  <- input$trials
@@ -129,9 +139,6 @@ server <- function(input, output) {
         observeEvent(input$setseed, {
           set.seed(sample(1:100000, 1))
         })
-
-        #Set colours
-        defcols <- c("#E41A1C" ,"#377EB8")
 
         for (t in 1:trials){
 
@@ -153,7 +160,28 @@ server <- function(input, output) {
 
         }
 
-        # draw the choice selection
+        list(
+          Q2 = Q2,
+          prob_a1 = prob_a1,
+          a=a,
+          r=r
+        )
+
+    })
+
+    output$distPlot <- renderPlot({
+
+        trials  <- input$trials
+        seed    <- input$setseed
+
+        #Set colours
+        defcols <- c("#E41A1C" ,"#377EB8")
+
+        #extract df
+        Q2      <- data()$Q2
+        prob_a1 <- data()$prob_a1
+        a       <- data()$a
+        r       <- data()$r
 
         colnames(Q2) <- c('Card 1', 'Card 2')
         mainplot <- Q2 %>%
@@ -204,6 +232,16 @@ server <- function(input, output) {
 #
         (mainplot / subplot) & plot_layout(nrow = 2, heights = c(2,1))
     })
+
+    # Downloadable csv of data file
+    output$downloadData <- downloadHandler(
+      filename = function() {
+        paste("data-", Sys.Date(), ".csv", sep="")
+      },
+      content = function(file) {
+        write.csv(data()$Q2, file, row.names = FALSE)
+      }
+    )
 }
 
 # Run the application

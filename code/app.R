@@ -8,6 +8,8 @@ library(patchwork)
 library(shinythemes)
 library(bslib)
 
+source("RLmodel_fitting.R")
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
@@ -30,77 +32,80 @@ ui <- fluidPage(
                   sep="<br/>")))),
         br(),
 
-    sidebarLayout(
-        sidebarPanel(
-          class="pull-right",
-          downloadButton('downloadData', 'Download Data')
-        ),
+        sidebarLayout(
+            sidebarPanel(
+              class="pull-left",
+              downloadButton('downloadData', 'Download Data')
+            ),
 
-    mainPanel(
-      )
-    ),
-
-    br(),
-
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            actionButton("setseed", "Select a new agent"),
-            br(),
-            br(),
-            sliderInput("lr",
-                        HTML(paste("Learning Rate: (&lambda;)")),
-                        min = 0.01,
-                        max = 1,
-                        value = 0.1,
-                        step = 0.01),
-            br(),
-            sliderInput("tau",
-                        HTML(paste("Decision Temperature: (&tau;)")),
-                        min = 0.1,
-                        max = 10,
-                        value = 1,
-                        step = 0.1),
-            br(),
-            sliderInput("trials",
-                        "Task Length:",
-                        min = 50,
-                        max = 500,
-                        value = 100,
-                        step = 50),
-            br(),
-            sliderInput("winprob",
-                        "Win Probability of Card 2:",
-                        min = 0,
-                        max = 1,
-                        value = 0.8,
-                        step = 0.1),
-           br()
-        ),
-
-        # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot", height = '700px', width = 'auto')
+          )
+        ),
+
+        br(),
+
+        # Sidebar with a slider input for number of bins
+        sidebarLayout(
+            sidebarPanel(
+                actionButton("setseed", "Select a new agent"),
+                br(),
+                br(),
+                sliderInput("lr",
+                            HTML(paste("Learning Rate: (&lambda;)")),
+                            min = 0.01,
+                            max = 1,
+                            value = 0.1,
+                            step = 0.01),
+                br(),
+                sliderInput("tau",
+                            HTML(paste("Decision Temperature: (&tau;)")),
+                            min = 0.1,
+                            max = 10,
+                            value = 1,
+                            step = 0.1),
+                br(),
+                sliderInput("trials",
+                            "Task Length:",
+                            min = 50,
+                            max = 500,
+                            value = 100,
+                            step = 50),
+                br(),
+                sliderInput("winprob",
+                            "Win Probability of Card 2:",
+                            min = 0,
+                            max = 1,
+                            value = 0.8,
+                            step = 0.1),
+               br()
+            ),
+
+            # Show a plot of the generated distribution
+            mainPanel(
+               plotOutput("distPlot", height = '700px', width = 'auto')
+            )
         )
-    )
-    ),
+        ),
 
 # Fit own data ------------------------------------------------------------
 
-    tabPanel("Fit your own data",
-             sidebarLayout(
-               sidebarPanel(
-                 fileInput('file', 'Choose CSV File',
-                           accept = c('text/csv',
-                                      'text/comma-separated-values,text/plain',
-                                      '.csv'))
-               ),
+        tabPanel("Fit your own data",
+                 titlePanel(h4("Upload a .csv file of your behavioural data.", "<br/>",
+                               "It needs at least one column called 'choice' and another called 'reward':")),
+                 sidebarLayout(
+                   sidebarPanel(
+                     fileInput('file', 'Choose CSV File',
+                               accept = c('text/csv',
+                                          'text/comma-separated-values,text/plain',
+                                          '.csv'))
+                   ),
 
-               mainPanel(
-                 tableOutput('table')
-               )
-             )
-    ), ### WORK IN PROGRESS ###
+                   mainPanel(
+                     tableOutput('table')
+                   ),
+                 ),
+                 actionButton("calculate", "Calculate Negative Log Likelihood")
+        ), ### WORK IN PROGRESS ###
 
 # Maths -------------------------------------------------------------------
 
@@ -140,7 +145,20 @@ server <- function(input, output) {
                        "))
     })
 
-    uploaded_data <- reactive({})
+    uploaded_data <- reactive({
+                      file <- input$file
+                      if(is.null(file)) return(NULL)
+                      read.csv(file$datapath) %>% na.omit()
+                    })
+
+    output$log_likelihood <- renderPrint({
+            if (is.null(data())) return(NULL)
+
+            isolate({
+              input$calculate
+              neg_log_likelihood(uploaded_data(), c(1,2))
+            })
+          })
 
     data <- reactive({
 
@@ -182,11 +200,11 @@ server <- function(input, output) {
 
         }
 
-        list(
+       list(
           Q2 = Q2,
           prob_a1 = prob_a1,
-          a=a,
-          r=r
+          choice=a,
+          reward=r
         )
 
     })
@@ -202,8 +220,8 @@ server <- function(input, output) {
         #extract df
         Q2      <- data()$Q2
         prob_a1 <- data()$prob_a1
-        a       <- data()$a
-        r       <- data()$r
+        a       <- data()$choice
+        r       <- data()$reward
 
         colnames(Q2) <- c('Card 1', 'Card 2')
         mainplot <- Q2 %>%
@@ -261,16 +279,16 @@ server <- function(input, output) {
         paste("data-", Sys.Date(), ".csv", sep="")
       },
       content = function(file) {
-        write.csv(data()$Q2, file, row.names = FALSE)
+        write.csv(data(), file, row.names = FALSE)
       }
     )
 
     # Render the data in the UI from uploaded data
     output$table <- renderTable({
-      if (is.null(data())) {
+      if (is.null(uploaded_data())) {
         return(NULL)
       }
-      head(uploaded_data())
+      uploaded_data()
     }, rownames = TRUE)
 }
 

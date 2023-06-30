@@ -5,29 +5,49 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(patchwork)
+library(shinythemes)
+library(bslib)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
+    theme = bs_theme(version = 4, bootswatch = "minty"),
+
     tabsetPanel(
-      tabPanel('Dynamic Learning Environment',
-    # Application title
-    titlePanel(h4(HTML(paste(
-                    "This is an introduction to creating a basic algorithm that learns the value of its environment.",
+
+
+# Simulate data -----------------------------------------------------------
+
+      tabPanel('Simulate data',
+        # Application title
+        titlePanel(h4(HTML(paste(
+                      "This is an introduction to creating a basic algorithm that learns the value of its environment.",
+                      "<br/>",
+                      "Here the agent is placed in an environment where it learns about the value of two cards.
+                      On each trial it samples a card to learn whether it gained a reward.
+                      Over time the agent will come to learn which card will give it most reward; the
+                      agent will seek to maximise its return.",
+                      "<br/>")))),
+        br(),
+        titlePanel(h4(HTML(paste("Move the sliders to change the task structure and agent policy.",
                   "<br/>",
-                  "Here the agent is placed in an environment where it learns about the value of two cards.
-                  On each trial it samples a card to learn whether it gained a reward.
-                  Over time the agent will come to learn which card will give it most reward; the
-                  agent will seek to maximise its return.",
-                  "<br/>")))),
-    br(),
-    titlePanel(h4(HTML(paste("Move the sliders to change the task structure and agent policy.",
-              "<br/>",
-              "The black dashed line is the probability that the agent will choose Card 1,
-              and the coloured lines are the internal beliefs the agent holds about the value of each card.",
-              "</br/>",
-              "Click 'Select a new agent' to start a new agent from scratch using the same settings",
-              sep="<br/>")))),
+                  "The black dashed line is the probability that the agent will choose Card 1,
+                  and the coloured lines are the internal beliefs the agent holds about the value of each card.",
+                  "</br/>",
+                  "Click 'Select a new agent' to start a new agent from scratch using the same settings",
+                  sep="<br/>")))),
+        br(),
+
+    sidebarLayout(
+        sidebarPanel(
+          class="pull-right",
+          downloadButton('downloadData', 'Download Data')
+        ),
+
+    mainPanel(
+      )
+    ),
+
     br(),
 
     # Sidebar with a slider input for number of bins
@@ -70,18 +90,11 @@ ui <- fluidPage(
         mainPanel(
            plotOutput("distPlot", height = '700px', width = 'auto')
         )
-    ),
-
-    sidebarLayout(
-    sidebarPanel(
-      downloadButton('downloadData', 'Download Data')
-    ),
-
-    mainPanel(
-      tableOutput('table')
-    )
     )
     ),
+
+
+# Maths -------------------------------------------------------------------
 
     tabPanel(title = 'The Maths',
     titlePanel(h4(HTML(paste("The way in which the agent acts upon the environment to maximise its return is to convert its beliefs into actions",
@@ -100,7 +113,24 @@ ui <- fluidPage(
       uiOutput("formula")
       ),
 
-    )
+      ),
+
+
+# Fit own data ------------------------------------------------------------
+
+    tabPanel("Fit your own data",
+             sidebarLayout(
+               sidebarPanel(
+                 fileInput('file', 'Choose CSV File',
+                           accept = c('text/csv',
+                                      'text/comma-separated-values,text/plain',
+                                      '.csv'))
+               ),
+
+               mainPanel(
+               )
+             )
+    ), ### WORK IN PROGRESS ###
     ),
 
     titlePanel(h5(HTML(paste("CC <a href='https://www.joebarnby.com/'>Team Hypatia</a> 2023"))))
@@ -125,7 +155,6 @@ server <- function(input, output) {
         trials  <- input$trials
         lambda  <- input$lr
         tau     <- input$tau
-        gamma   <- input$gamma
         seed    <- input$setseed
 
         actions <- 2

@@ -304,7 +304,8 @@ server <- function(input, output) {
       if (is.null(uploaded_data())) return(NULL)
       data_to_use <- uploaded_data()
       start_params <- c(1, 0.1) # Initial parameters (decision temperature and learning rate)
-      opt_result <- optim(start_params, fn = neg_log_likelihood, data = data_to_use)
+      opt_result <- optim(start_params, fn = neg_log_likelihood, data = data_to_use,
+                          upper = c(10, 1), lower = c(0, 0))
       optimized_result(opt_result)
     })
 

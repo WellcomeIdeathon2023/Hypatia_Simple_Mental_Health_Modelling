@@ -11,7 +11,7 @@ library(bslib)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
-    theme = bs_theme(version = 4, bootswatch = "minty"),
+    theme = shinytheme(theme = 'cosmo'),
 
     tabsetPanel(
 
@@ -22,18 +22,10 @@ ui <- fluidPage(
         # Application title
         titlePanel(h4(HTML(paste(
                       "This is an introduction to creating a basic algorithm that learns the value of its environment.",
-                      "<br/>",
+                      "<br/>", "<br/>",
                       "Here the agent is placed in an environment where it learns about the value of two cards.
-                      On each trial it samples a card to learn whether it gained a reward.
-                      Over time the agent will come to learn which card will give it most reward; the
-                      agent will seek to maximise its return.",
-                      "<br/>")))),
-        br(),
+                      On each trial it samples a card to learn whether it gained a reward.")))),
         titlePanel(h4(HTML(paste("Move the sliders to change the task structure and agent policy.",
-                  "<br/>",
-                  "The black dashed line is the probability that the agent will choose Card 1,
-                  and the coloured lines are the internal beliefs the agent holds about the value of each card.",
-                  "</br/>",
                   "Click 'Select a new agent' to start a new agent from scratch using the same settings",
                   sep="<br/>")))),
         br(),
@@ -93,6 +85,22 @@ ui <- fluidPage(
     )
     ),
 
+# Fit own data ------------------------------------------------------------
+
+    tabPanel("Fit your own data",
+             sidebarLayout(
+               sidebarPanel(
+                 fileInput('file', 'Choose CSV File',
+                           accept = c('text/csv',
+                                      'text/comma-separated-values,text/plain',
+                                      '.csv'))
+               ),
+
+               mainPanel(
+                 tableOutput('table')
+               )
+             )
+    ), ### WORK IN PROGRESS ###
 
 # Maths -------------------------------------------------------------------
 
@@ -114,24 +122,6 @@ ui <- fluidPage(
       ),
 
       ),
-
-
-# Fit own data ------------------------------------------------------------
-
-    tabPanel("Fit your own data",
-             sidebarLayout(
-               sidebarPanel(
-                 fileInput('file', 'Choose CSV File',
-                           accept = c('text/csv',
-                                      'text/comma-separated-values,text/plain',
-                                      '.csv'))
-               ),
-
-               mainPanel(
-                 tableOutput('table')
-               )
-             )
-    ), ### WORK IN PROGRESS ###
     ),
 
     titlePanel(h5(HTML(paste("CC <a href='https://www.joebarnby.com/'>Team Hypatia</a> 2023"))))

@@ -136,6 +136,9 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
+
+# Maths output for maths tab ----------------------------------------------
+
     output$formula <- renderUI({
     withMathJax(paste0("
                        $$Q^{t}_{c} = Q^{t-1}_{c} * \\lambda + ({Reward - Q^{t-1}_{c}})$$
@@ -145,11 +148,17 @@ server <- function(input, output) {
                        "))
     })
 
+
+# Uploaded data reactive element ------------------------------------------
+
     uploaded_data <- reactive({
                       file <- input$file
                       if(is.null(file)) return(NULL)
                       read.csv(file$datapath) %>% na.omit()
                     })
+
+
+# Run the function over the data ------------------------------------------
 
     output$log_likelihood <- renderPrint({
             if (is.null(data())) return(NULL)
@@ -159,6 +168,9 @@ server <- function(input, output) {
               neg_log_likelihood(uploaded_data(), c(1,2))
             })
           })
+
+
+# For simulating data -----------------------------------------------------
 
     data <- reactive({
 
@@ -208,6 +220,9 @@ server <- function(input, output) {
         )
 
     })
+
+
+# Plot the simulated data -------------------------------------------------
 
     output$distPlot <- renderPlot({
 
@@ -273,6 +288,9 @@ server <- function(input, output) {
         (mainplot / subplot) & plot_layout(nrow = 2, heights = c(2,1))
     })
 
+
+# Push the download data button to server ---------------------------------
+
     # Downloadable csv of data file
     output$downloadData <- downloadHandler(
       filename = function() {
@@ -282,6 +300,9 @@ server <- function(input, output) {
         write.csv(data(), file, row.names = FALSE)
       }
     )
+
+
+# Push the fitting output to server ---------------------------------------
 
     # Render the data in the UI from uploaded data
     output$table <- renderTable({

@@ -300,12 +300,17 @@ server <- function(input, output) {
     # Render the data in the UI from uploaded data
     optimized_result <- reactiveVal()
 
+    #optimise the parameters for the inputted data
     observeEvent(input$optimize, {
       if (is.null(uploaded_data())) return(NULL)
       data_to_use <- uploaded_data()
       start_params <- c(1, 0.1) # Initial parameters (decision temperature and learning rate)
+
+      ### TO NOTE ###
+      ### We want to replace the below with a hierarchical fit ### ?hBayesDM use?
+
       opt_result <- optim(start_params, fn = neg_log_likelihood, data = data_to_use,
-                          upper = c(10, 1), lower = c(0, 0))
+                          upper = c(10, 1), lower = c(0, 0), method = 'L-BFGS-B')
       optimized_result(opt_result)
     })
 

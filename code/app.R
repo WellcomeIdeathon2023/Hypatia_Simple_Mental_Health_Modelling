@@ -128,6 +128,7 @@ ui <- fluidPage(
                ),
 
                mainPanel(
+                 tableOutput('table')
                )
              )
     ), ### WORK IN PROGRESS ###
@@ -148,6 +149,8 @@ server <- function(input, output) {
                        $$\\text{Therefore, } Q^{t}_{c} = \\text{the internal beliefs the agent holds about the value of each card at each trial}$$
                        "))
     })
+
+    uploaded_data <- reactive({})
 
     data <- reactive({
 
@@ -271,6 +274,14 @@ server <- function(input, output) {
         write.csv(data()$Q2, file, row.names = FALSE)
       }
     )
+
+    # Render the data in the UI from uploaded data
+    output$table <- renderTable({
+      if (is.null(data())) {
+        return(NULL)
+      }
+      head(uploaded_data())
+    }, rownames = TRUE)
 }
 
 # Run the application

@@ -90,21 +90,26 @@ ui <- fluidPage(
 # Fit own data ------------------------------------------------------------
 
         tabPanel("Fit your own data",
-                 titlePanel(h4("Upload a .csv file of your behavioural data.", "<br/>",
-                               "It needs at least one column called 'choice' and another called 'reward':")),
-                 sidebarLayout(
-                   sidebarPanel(
-                     fileInput('file', 'Choose CSV File',
-                               accept = c('text/csv',
-                                          'text/comma-separated-values,text/plain',
-                                          '.csv'))
-                   ),
+                 titlePanel(h4("Upload a .csv file of your behavioural data.
+                                It needs at least one column called 'choice' and another called 'reward':")),
+                  sidebarLayout(
+                  sidebarPanel(
+                    fileInput("file", "Choose CSV File",
+                              accept = c(
+                                "text/csv",
+                                "text/comma-separated-values,text/plain",
+                                ".csv")),
 
-                   mainPanel(
-                     tableOutput('table')
-                   ),
-                 ),
-                 actionButton("calculate", "Calculate Negative Log Likelihood")
+                    tags$hr(),
+
+                    actionButton("optimize", "Optimize Parameters")
+                  ),
+
+                  mainPanel(
+                    verbatimTextOutput("optimized_params"),
+                    verbatimTextOutput("min_log_likelihood")
+                  )
+                ),
         ), ### WORK IN PROGRESS ###
 
 # Maths -------------------------------------------------------------------
@@ -154,21 +159,9 @@ server <- function(input, output) {
     uploaded_data <- reactive({
                       file <- input$file
                       if(is.null(file)) return(NULL)
-                      read.csv(file$datapath) %>% na.omit()
+                      read.csv(file$datapath) %>%
+                        na.omit()
                     })
-
-
-# Run the function over the data ------------------------------------------
-
-    output$log_likelihood <- renderPrint({
-            if (is.null(data())) return(NULL)
-
-            isolate({
-              input$calculate
-              neg_log_likelihood(uploaded_data(), c(1,2))
-            })
-          })
-
 
 # For simulating data -----------------------------------------------------
 
@@ -305,12 +298,25 @@ server <- function(input, output) {
 # Push the fitting output to server ---------------------------------------
 
     # Render the data in the UI from uploaded data
-    output$table <- renderTable({
-      if (is.null(uploaded_data())) {
-        return(NULL)
-      }
-      uploaded_data()
-    }, rownames = TRUE)
+    optimized_result <- reactiveVal()
+
+    observeEvent(input$optimize, {
+      if (is.null(uploaded_data())) return(NULL)
+      data_to_use <- uploaded_data()
+      start_params <- c(1, 0.1) # Initial parameters (decision temperature and learning rate)
+      opt_result <- optim(start_params, fn = neg_log_likelihood, data = data_to_use)
+      optimized_result(opt_result)
+    })
+
+    output$optimized_params <- renderPrint({
+      if (is.null(optimized_result())) return(NULL)
+      optimized_result()$par
+    })
+
+    output$min_log_likelihood <- renderPrint({
+      if (is.null(optimized_result())) return(NULL)
+      optimized_result()$value
+    })
 }
 
 # Run the application

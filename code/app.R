@@ -109,12 +109,16 @@ ui <- fluidPage(
 
                   mainPanel(
                     h3('Optimized parameters'),
+                    h6('Note: the square brackets refer to each participant id.'),
                     verbatimTextOutput("optimized_params"),
                     h3('Minimum log likelihood per participant'),
+                    h6('The closer this is to zero, the better.'),
                     verbatimTextOutput("min_log_likelihood"),
                     h3('Rhat value for each optimized parameter'),
+                    h6('This should be below 1.01, ideally.'),
                     verbatimTextOutput("rhat"),
                     h3('Traceplot for log posterior'),
+                    h6('This should look like lots of furry caterpillars in different colours.'),
                     plotOutput("traceplot", height = '200px', width = 'auto')
                   )
                 ),

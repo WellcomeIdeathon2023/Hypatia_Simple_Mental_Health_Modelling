@@ -28,4 +28,6 @@ fit<-sampling(model,data)
 
 parameters<-summary(fit, pars=c('alpha','beta'))$summary[,1]
 loglik<-summary(fit, pars=c('loglik'))$summary[,1]
-fit_summary<-list(pars=parameters,value=loglik)
+rhat<-summary(fit, pars=c('alpha','beta'))$summary[,10] #rhat of just param estimates
+trace<-traceplot(fit,pars='lp__')
+fit_summary<-list(pars=parameters,value=loglik,rhat=rhat,trace=trace)

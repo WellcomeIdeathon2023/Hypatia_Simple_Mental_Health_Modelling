@@ -109,7 +109,8 @@ ui <- fluidPage(
 
                   mainPanel(
                     verbatimTextOutput("optimized_params"),
-                    verbatimTextOutput("min_log_likelihood")
+                    verbatimTextOutput("min_log_likelihood"),
+                    verbatimTextOutput("rhat")
                   )
                 ),
         ), ### WORK IN PROGRESS ###
@@ -343,7 +344,9 @@ server <- function(input, output) {
       opt_result2 <- sampling(model,data)
       parameters<-summary(opt_result2, pars=c('alpha','beta'))$summary[,1]
       loglik<-summary(opt_result2, pars=c('loglik'))$summary[,1]
-      fit_summary<-list(pars=parameters,loglik=loglik)
+      rhat<-summary(opt_result2, pars=c('alpha','beta'))$summary[,10] #rhat of just param estimates
+      trace<-traceplot(opt_result2,pars='lp__')
+      fit_summary<-list(pars=parameters,loglik=loglik,rhat=rhat,trace=trace)
       optimized_result(fit_summary)
     })
 
@@ -355,6 +358,16 @@ server <- function(input, output) {
     output$min_log_likelihood <- renderPrint({
       if (is.null(optimized_result())) return(NULL)
       optimized_result()$loglik
+    })
+
+    output$rhat <- renderPrint({
+      if (is.null(optimized_result())) return(NULL)
+      optimized_result()$rhat
+    })
+
+    output$traceplot <- renderPrint({
+      if (is.null(optimized_result())) return(NULL)
+      optimized_result()$traceplot
     })
 }
 

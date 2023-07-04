@@ -110,7 +110,8 @@ ui <- fluidPage(
                   mainPanel(
                     verbatimTextOutput("optimized_params"),
                     verbatimTextOutput("min_log_likelihood"),
-                    verbatimTextOutput("rhat")
+                    verbatimTextOutput("rhat"),
+                    plotOutput("traceplot", height = '200px', width = 'auto')
                   )
                 ),
         ), ### WORK IN PROGRESS ###
@@ -346,7 +347,7 @@ server <- function(input, output) {
       loglik<-summary(opt_result2, pars=c('loglik'))$summary[,1]
       rhat<-summary(opt_result2, pars=c('alpha','beta'))$summary[,10] #rhat of just param estimates
       trace<-traceplot(opt_result2,pars='lp__')
-      fit_summary<-list(pars=parameters,loglik=loglik,rhat=rhat,trace=trace)
+      fit_summary<-list(pars=parameters,loglik=loglik,rhat=rhat,traceplot=trace)
       optimized_result(fit_summary)
     })
 
@@ -365,10 +366,12 @@ server <- function(input, output) {
       optimized_result()$rhat
     })
 
-    output$traceplot <- renderPrint({
+    output$traceplot <- renderPlot({
       if (is.null(optimized_result())) return(NULL)
-      optimized_result()$traceplot
+      optimized_result()$trace
     })
+
+
 }
 
 # Run the application

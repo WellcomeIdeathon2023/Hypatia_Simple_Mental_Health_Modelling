@@ -92,7 +92,8 @@ ui <- fluidPage(
 
         tabPanel("Fit your own data",
                  titlePanel(h4("Upload a .csv file of your behavioural data.
-                                It needs at least one column called 'choice' and another called 'reward':")),
+                                It needs at least one column called 'choice' and another called 'reward.
+                                If you have more than one participant, please add a column called 'id':")),
                   sidebarLayout(
                   sidebarPanel(
                     fileInput("file", "Choose CSV File",
@@ -342,8 +343,8 @@ server <- function(input, output) {
       opt_result2 <- sampling(model,data)
       parameters<-summary(opt_result2, pars=c('alpha','beta'))$summary[,1]
       loglik<-summary(opt_result2, pars=c('loglik'))$summary[,1]
-      fit_summary<-list(pars=parameters,value=loglik)
-      optimized_result(opt_result2)
+      fit_summary<-list(pars=parameters,loglik=loglik)
+      optimized_result(fit_summary)
     })
 
     output$optimized_params <- renderPrint({
@@ -353,7 +354,7 @@ server <- function(input, output) {
 
     output$min_log_likelihood <- renderPrint({
       if (is.null(optimized_result())) return(NULL)
-      optimized_result()$value
+      optimized_result()$loglik
     })
 }
 

@@ -26,4 +26,6 @@ data<-list(
 
 fit<-sampling(model,data)
 
-summary(fit, pars=c('alpha','beta'))$summary[,1]
+parameters<-summary(fit, pars=c('alpha','beta'))$summary[,1]
+loglik<-summary(fit, pars=c('loglik'))$summary[,1]
+fit_summary<-list(pars=parameters,value=loglik)

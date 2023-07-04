@@ -104,6 +104,20 @@ ui <- fluidPage(
 
                     tags$hr(),
 
+                    sliderInput("n_chain",
+                                    HTML(paste("Number of chains")),
+                                    min = 0,
+                                    max = 4,
+                                    value = 2,
+                                    step = 1),
+                      br(),
+                      sliderInput("n_samp",
+                                    HTML(paste("Number of samples")),
+                                    min = 500,
+                                    max = 2000,
+                                    value = 500,
+                                    step = 10),
+
                     actionButton("optimize", "Optimize Parameters")
                   ),
 
@@ -313,6 +327,8 @@ server <- function(input, output) {
 
 # Push the fitting output to server ---------------------------------------
 
+
+
     # Render the data in the UI from uploaded data
     optimized_result <- reactiveVal()
 
@@ -360,7 +376,7 @@ server <- function(input, output) {
         reward=reward,
         choices=choice)
 
-      opt_result2 <- sampling(model,data)
+      opt_result2 <- sampling(model,data,chains=input$n_chain,iter=input$n_samp)
       parameters<-summary(opt_result2, pars=c('alpha','beta'))$summary[,1]
       loglik<-summary(opt_result2, pars=c('loglik'))$summary[,1]
       rhat<-summary(opt_result2, pars=c('alpha','beta'))$summary[,10] #rhat of just param estimates

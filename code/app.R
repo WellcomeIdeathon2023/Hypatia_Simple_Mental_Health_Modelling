@@ -7,6 +7,7 @@ library(tidyr)
 library(patchwork)
 library(shinythemes)
 library(bslib)
+library(rstan)
 
 source("RLmodel_fitting.R")
 
@@ -304,17 +305,44 @@ server <- function(input, output) {
     # Render the data in the UI from uploaded data
     optimized_result <- reactiveVal()
 
+    # Load the RDS model file (precompiled)
+    model <- readRDS('model_1a1b.rds')
+
     #optimise the parameters for the inputted data
     observeEvent(input$optimize, {
       if (is.null(uploaded_data())) return(NULL)
       data_to_use <- uploaded_data()
-      start_params <- c(1, 0.1) # Initial parameters (decision temperature and learning rate)
+      #start_params <- c(1, 0.1) # Initial parameters (decision temperature and learning rate)
 
       ### TO NOTE ###
       ### We want to replace the below with a hierarchical fit ### ?hBayesDM use?
 
-      opt_result2 <- optim(start_params, fn = neg_log_likelihood, data = data_to_use,
-                          upper = c(10, 1), lower = c(0, 0), method = 'L-BFGS-B')
+      #opt_result2 <- optim(start_params, fn = neg_log_likelihood, data = data_to_use,
+      #                    upper = c(10, 1), lower = c(0, 0), method = 'L-BFGS-B')
+      #optimized_result(opt_result2)
+
+      data<-data_to_use
+
+      reward<-data%>%
+        select(id,trial,reward)%>%
+        pivot_wider(id_cols = trial,names_from = id,values_from = reward)%>%
+        select(-c(trial))
+
+      choice<-data%>%
+        select(id,trial,choice)%>%
+        pivot_wider(id_cols = trial,names_from = id,values_from = choice)%>%
+        select(-c(trial))
+
+      data<-list(
+        nsub=length(unique(data$id)),
+        ntrials=max(data$trial),
+        reward=reward,
+        choices=choice)
+
+      opt_result2 <- sampling(model,data)
+      parameters<-summary(opt_result2, pars=c('alpha','beta'))$summary[,1]
+      loglik<-summary(opt_result2, pars=c('loglik'))$summary[,1]
+      fit_summary<-list(pars=parameters,value=loglik)
       optimized_result(opt_result2)
     })
 

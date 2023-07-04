@@ -167,6 +167,9 @@ server <- function(input, output) {
 
     data <- reactive({
 
+        seed <- sample(1:100000, 1)
+        set.seed(seed)
+
         # generate bins based on input$bins from ui.R
         trials  <- input$trials
         lambda  <- input$lr
@@ -182,7 +185,8 @@ server <- function(input, output) {
 
         #Sample the cards
         observeEvent(input$setseed, {
-          set.seed(sample(1:100000, 1))
+          seed <- sample(1:100000, 1)
+          set.seed(seed)
         })
 
         for (t in 1:trials){
@@ -287,7 +291,7 @@ server <- function(input, output) {
     # Downloadable csv of data file
     output$downloadData <- downloadHandler(
       filename = function() {
-        paste("data-", Sys.Date(), ".csv", sep="")
+        paste("data-", Sys.Date(), "-", seed, ".csv", sep="")
       },
       content = function(file) {
         write.csv(data(), file, row.names = FALSE)
@@ -309,9 +313,9 @@ server <- function(input, output) {
       ### TO NOTE ###
       ### We want to replace the below with a hierarchical fit ### ?hBayesDM use?
 
-      opt_result <- optim(start_params, fn = neg_log_likelihood, data = data_to_use,
+      opt_result2 <- optim(start_params, fn = neg_log_likelihood, data = data_to_use,
                           upper = c(10, 1), lower = c(0, 0), method = 'L-BFGS-B')
-      optimized_result(opt_result)
+      optimized_result(opt_result2)
     })
 
     output$optimized_params <- renderPrint({

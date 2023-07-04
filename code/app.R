@@ -335,7 +335,9 @@ server <- function(input, output) {
       }
 
       if(is.null(data$trial)){
-        data$trial<-seq(1:nrow(data))
+        nsub<-length(unique(data$id))
+        trials<-nrow(data)/nsub #specifies
+        data$trial<-rep(seq(1:trials),nsub)
       }
 
       reward<-data%>%

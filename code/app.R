@@ -240,7 +240,7 @@ server <- function(input, output) {
           as.data.frame() %>%
           mutate(Trial = 0:trials,
                  ProbA1= prob_a1) %>%
-          pivot_longer(1:2, 'Option', values_to = 'Q') %>%
+          pivot_longer(cols = 1:2, names_to = 'Option', values_to = 'Q') %>%
 
           ggplot(aes(Trial, Q, color = Option))+
           geom_line()+
@@ -271,7 +271,7 @@ server <- function(input, output) {
           dplyr::select(ActionS1, ActionS2, RewardS) %>%
           rename(`Card 1 Choices` = 1, `Card 2 Choices` = 2, `Rewards`= 3) %>%
           distinct() %>%
-          pivot_longer(1:3, 'Index', values_to = 'Value') %>%
+          pivot_longer(cols = 1:3, names_to = 'Index', values_to = 'Value') %>%
           ggplot(aes(Index, Value))+
           geom_col(fill = c(defcols, "#FFB302"), color = 'black')+
           coord_cartesian(ylim = c(0, trials))+

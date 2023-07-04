@@ -52,14 +52,14 @@ ui <- fluidPage(
                 br(),
                 br(),
                 sliderInput("lr",
-                            HTML(paste("Learning Rate: (&lambda;)")),
+                            HTML(paste("Learning Rate: (&alpha;)")),
                             min = 0.01,
                             max = 1,
                             value = 0.1,
                             step = 0.01),
                 br(),
-                sliderInput("tau",
-                            HTML(paste("Decision Temperature: (&tau;)")),
+                sliderInput("beta",
+                            HTML(paste("Decision Temperature: (&beta;)")),
                             min = 0.1,
                             max = 10,
                             value = 1,
@@ -108,9 +108,13 @@ ui <- fluidPage(
                   ),
 
                   mainPanel(
+                    h3('Optimized parameters'),
                     verbatimTextOutput("optimized_params"),
+                    h3('Minimum log likelihood per participant'),
                     verbatimTextOutput("min_log_likelihood"),
+                    h3('Rhat value for each optimized parameter'),
                     verbatimTextOutput("rhat"),
+                    h3('Traceplot for log posterior'),
                     plotOutput("traceplot", height = '200px', width = 'auto')
                   )
                 ),
@@ -150,8 +154,8 @@ server <- function(input, output) {
 
     output$formula <- renderUI({
     withMathJax(paste0("
-                       $$Q^{t}_{c} = Q^{t-1}_{c} * \\lambda + ({Reward - Q^{t-1}_{c}})$$
-                       $$p(\\hat{c} = c) = \\frac{e^{\\frac{Q^{t}_{c}}{\\tau}}}{\\sum_{c'\\in(c_1, c_2)} e^{\\frac{Q^{t}_{c'}}{\\tau}}}$$
+                       $$Q^{t}_{c} = Q^{t-1}_{c} * \\alpha ({Reward - Q^{t-1}_{c}})$$
+                       $$p(\\hat{c} = c) = \\frac{e^{\\frac{Q^{t}_{c}}{\\beta}}}{\\sum_{c'\\in(c_1, c_2)} e^{\\frac{Q^{t}_{c'}}{\\beta}}}$$
 
                        $$\\text{Therefore, } Q^{t}_{c} = \\text{the internal beliefs the agent holds about the value of each card at each trial}$$
                        "))
@@ -176,8 +180,8 @@ server <- function(input, output) {
 
         # generate bins based on input$bins from ui.R
         trials  <- input$trials
-        lambda  <- input$lr
-        tau     <- input$tau
+        alpha   <- input$lr
+        beta    <- input$beta
         seed    <- input$setseed
 
         actions <- 2
@@ -196,8 +200,8 @@ server <- function(input, output) {
         for (t in 1:trials){
 
           #sample an action
-          a1            <- exp(Q2[t,1]/tau)
-          a2            <- exp(Q2[t,2]/tau)
+          a1            <- exp(Q2[t,1]/beta)
+          a2            <- exp(Q2[t,2]/beta)
           prob_a1[t]    <- a1/(a1+a2)
           a[t]          <- sample(c(1,2),  1, T, prob = c(prob_a1[t], 1-prob_a1[t]))
 
@@ -208,7 +212,7 @@ server <- function(input, output) {
           #update
           PE            <- r[t] - Q2[t, a[t]]
 
-          Q2[t+1, a[t]] <- Q2[t, a[t]] + (lambda * PE) #RW equation
+          Q2[t+1, a[t]] <- Q2[t, a[t]] + (alpha * PE) #RW equation
           Q2[t+1,-a[t]] <- Q2[t,-a[t]]
 
         }
@@ -326,6 +330,14 @@ server <- function(input, output) {
 
       data<-data_to_use
 
+      if(is.null(data$id)){
+        data$id<-rep(1,nrow(data))
+      }
+
+      if(is.null(data$trial)){
+        data$trial<-seq(1:nrow(data))
+      }
+
       reward<-data%>%
         select(id,trial,reward)%>%
         pivot_wider(id_cols = trial,names_from = id,values_from = reward)%>%
@@ -370,8 +382,6 @@ server <- function(input, output) {
       if (is.null(optimized_result())) return(NULL)
       optimized_result()$trace
     })
-
-
 }
 
 # Run the application

@@ -198,8 +198,7 @@ server <- function(input, output) {
 
     data <- reactive({
 
-        seed <- sample(1:100000, 1)
-        set.seed(seed)
+        set.seed(sample(1:100000, 1))
 
         # generate bins based on input$bins from ui.R
         trials  <- input$trials
@@ -216,8 +215,7 @@ server <- function(input, output) {
 
         #Sample the cards
         observeEvent(input$setseed, {
-          seed <- sample(1:100000, 1)
-          set.seed(seed)
+          set.seed(sample(1:100000, 1))
         })
 
         for (t in 1:trials){

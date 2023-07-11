@@ -328,7 +328,7 @@ server <- function(input, output) {
     # Downloadable csv of data file
     output$downloadData <- downloadHandler(
       filename = function() {
-        paste("data-", Sys.Date(), "-", seed, ".csv", sep="")
+        paste("data-", Sys.Date(),".csv", sep="")
       },
       content = function(file) {
         write.csv(data(), file, row.names = FALSE)
@@ -337,8 +337,6 @@ server <- function(input, output) {
 
 
 # Push the fitting output to server ---------------------------------------
-
-
 
     # Render the data in the UI from uploaded data
     optimized_result <- reactiveVal()

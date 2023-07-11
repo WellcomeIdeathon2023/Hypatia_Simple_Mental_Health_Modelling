@@ -20,8 +20,6 @@ This repository was originally maintained and monitored by Wellcome staff and wi
      ├── Budget <br />
 
 
-- Final results, including presented slides and other content, should be uploaded to this folder.
-
 # LICENCE
 
 The code in this repository is licenced under a permissive [MIT licence](https://opensource.org/licenses/MIT). All other content is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). This means you may use any content in this repository as long as you credit the authors.

@@ -8,9 +8,11 @@ library(patchwork)
 library(shinythemes)
 library(bslib)
 library(rstan)
-library(devtools)
+library(renv)
 
-#install_github('WellcomeIdeathon2023',subdir='Hypatia_Simple_Mental_Health_Modelling/code/shinyStanModels')
+#ran this to show the shiny app where to source it from
+#options(timeout=99999)
+#devtools::install_github('WellcomeIdeathon2023/Hypatia_Simple_Mental_Health_Modelling',subdir='/code/shinyStanModels')
 
 source("RLmodel_fitting.R")
 

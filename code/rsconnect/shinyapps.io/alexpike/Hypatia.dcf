@@ -5,9 +5,9 @@ account: alexpike
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9439282
-bundleId: 7443513
+bundleId: 7444491
 url: https://alexpike.shinyapps.io/Hypatia/
-when: 1689070133.47548
-lastSyncTime: 1689070133.4755
+when: 1689086916.47177
+lastSyncTime: 1689086916.47179
 asMultiple: FALSE
 asStatic: FALSE

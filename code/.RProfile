@@ -1,0 +1,7 @@
+source("renv/activate.R")
+local({
+  r <- getOption("repos")
+  r["CRAN"] <- "https://cran.rstudio.com/"
+  r["mycompany"] <- "https://github.com/WellcomeIdeathon2023/Hypatia_Simple_Mental_Health_Modelling"
+  options(repos = r)
+})

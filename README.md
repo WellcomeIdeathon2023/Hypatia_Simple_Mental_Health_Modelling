@@ -1,4 +1,4 @@
-# Hypatia: Health modelling made simple <img src="https://github.com/WellcomeIdeathon2023/Hypatia_Simple_Mental_Health_Modelling/tree/main/results/hypatia_logo.JPG" align="right" width="250px">
+# Hypatia: Health modelling made simple <img src="https://github.com/WellcomeIdeathon2023/Hypatia_Simple_Mental_Health_Modelling/blob/main/results/hypatia_logo.JPG" align="right" width="250px">
 
 
 Our solution for the Wellcome Data Science Ideathon mental health challenge. 

@@ -8,9 +8,11 @@ library(patchwork)
 library(shinythemes)
 library(bslib)
 library(rstan)
-library(devtools)
+library(renv)
 
-#install_github('WellcomeIdeathon2023',subdir='Hypatia_Simple_Mental_Health_Modelling/code/shinyStanModels')
+#ran this to show the shiny app where to source it from
+#options(timeout=99999)
+#devtools::install_github('WellcomeIdeathon2023/Hypatia_Simple_Mental_Health_Modelling',subdir='/code/shinyStanModels')
 
 source("RLmodel_fitting.R")
 
@@ -50,20 +52,7 @@ ui <- fluidPage(
                 actionButton("setseed", "Select a new agent"),
                 br(),
                 br(),
-                sliderInput("lr",
-                            HTML(paste("Learning Rate: (&alpha;)")),
-                            min = 0.01,
-                            max = 1,
-                            value = 0.1,
-                            step = 0.01),
-                br(),
-                sliderInput("beta",
-                            HTML(paste("Decision Temperature: (&beta;)")),
-                            min = 0.1,
-                            max = 10,
-                            value = 1,
-                            step = 0.1),
-                br(),
+                h3('Task parameters'),
                 sliderInput("trials",
                             "Task Length:",
                             min = 50,
@@ -76,6 +65,21 @@ ui <- fluidPage(
                             min = 0,
                             max = 1,
                             value = 0.8,
+                            step = 0.1),
+                br(),
+                h3('Model parameters'),
+                sliderInput("lr",
+                            HTML(paste("Learning Rate: (&alpha;)")),
+                            min = 0.01,
+                            max = 1,
+                            value = 0.1,
+                            step = 0.01),
+                br(),
+                sliderInput("beta",
+                            HTML(paste("Decision Temperature: (&beta;)")),
+                            min = 0.1,
+                            max = 10,
+                            value = 1,
                             step = 0.1),
                 br(),
                 downloadButton('downloadData', 'Download Data')

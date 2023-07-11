@@ -7,12 +7,19 @@ This is your private repository for working on the challenges in the Wellcome Da
 This repository was originally maintained and monitored by Wellcome staff and will made public after July 13 2023.
 
 
-* `data` 
+* `data` <br />
      ├── data.csv # data from two simulated participants <br />
      ├── data_notrialnum.csv # # data from two simulated participants, without trials numbers <br />
      ├── data_singular.csv # data from one single simulated participant <br />
 * `code` - All code used as part of your solution should be uploaded this folder and is expected to be reproducible.
-* `results` - Final results, including presented slides and other content, should be uploaded to this folder.
+* `results` <br />
+     ├── Proposal <br />
+     ├── Presentation <br />
+     ├── Budget <br />
+
+
+
+- Final results, including presented slides and other content, should be uploaded to this folder.
 
 # LICENCE
 

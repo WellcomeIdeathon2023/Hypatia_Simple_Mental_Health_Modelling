@@ -1,12 +1,25 @@
-# README
+# Hypatia: Health modelling made simple <img src="https://github.com/WellcomeIdeathon2023/Hypatia_Simple_Mental_Health_Modelling/blob/main/results/hypatia_logo.JPG" align="right" width="250px">
 
+
+Our solution for the Wellcome Data Science Ideathon mental health challenge. 
 This is your private repository for working on the challenges in the Wellcome Data Science Ideathon.
-This repository is maintained and monitored by Wellcome staff and will be made public after July 13 2023.
-Feel free to create additional folders in this repository but please use the existing ones as follows:
 
-* `data` - Any data that is loaded from your scripts (excluding data scraped/downloaded from the web) should be uploaded to this folder. Simulated data should be reproducible.
+This repository was originally maintained and monitored by Wellcome staff and will made public after July 13 2023.
+
+
+* `data` <br />
+     ├── data.csv # data from two simulated participants <br />
+     ├── data_notrialnum.csv # # data from two simulated participants, without trials numbers <br />
+     ├── data_singular.csv # data from one single simulated participant <br />
 * `code` - All code used as part of your solution should be uploaded this folder and is expected to be reproducible.
-* `results` - Final results, including presented slides and other content, should be uploaded to this folder.
+* `results` <br />
+     ├── Proposal <br />
+     ├── Presentation <br />
+     ├── Budget <br />
+
+
+
+- Final results, including presented slides and other content, should be uploaded to this folder.
 
 # LICENCE
 

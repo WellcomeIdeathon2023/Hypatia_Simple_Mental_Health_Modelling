@@ -19,6 +19,8 @@ This repository was originally maintained and monitored by Wellcome staff and wi
      ├── Presentation <br />
      ├── Budget <br />
 
+# Team members
+Joseph Barnby, Alex Pike, Lei Zhang, Catia Oliveira
 
 # LICENCE
 

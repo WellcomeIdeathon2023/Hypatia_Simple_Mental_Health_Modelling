@@ -11,15 +11,16 @@ This repository was originally maintained and monitored by Wellcome staff and wi
      ├── data.csv # data from two simulated participants <br />
      ├── data_notrialnum.csv # # data from two simulated participants, without trials numbers <br />
      ├── data_singular.csv # data from one single simulated participant <br />
-* `code` - All code used as part of your solution should be uploaded this folder and is expected to be reproducible.
+* `code` <br />
+     ├── app.R # the central script for our prototype tool <br />
+     ├── RLmodel_fitting.R # reproducible script for simulating data <br />
 * `results` <br />
      ├── Proposal <br />
      ├── Presentation <br />
      ├── Budget <br />
 
-
-
-- Final results, including presented slides and other content, should be uploaded to this folder.
+# Team members
+Joseph Barnby, Alex Pike, Lei Zhang, Catia Oliveira
 
 # LICENCE
 

@@ -8,9 +8,9 @@ This repository was originally maintained and monitored by Wellcome staff and wi
 
 
 * `data` 
-     ├── data.csv # data from two simulated participants
-     ├── data_notrialnum.csv # # data from two simulated participants, without trials numbers
-     ├── data_singular.csv # data from one single simulated participant
+     ├── data.csv # data from two simulated participants <br />
+     ├── data_notrialnum.csv # # data from two simulated participants, without trials numbers <br />
+     ├── data_singular.csv # data from one single simulated participant <br />
 * `code` - All code used as part of your solution should be uploaded this folder and is expected to be reproducible.
 * `results` - Final results, including presented slides and other content, should be uploaded to this folder.
 

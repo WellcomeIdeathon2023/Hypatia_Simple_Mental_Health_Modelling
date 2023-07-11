@@ -15,9 +15,9 @@ This repository was originally maintained and monitored by Wellcome staff and wi
      ├── app.R # the central script for our prototype tool <br />
      ├── RLmodel_fitting.R # reproducible script for simulating data <br />
 * `results` <br />
-     ├── Proposal <br />
-     ├── Presentation <br />
-     ├── Budget <br />
+     ├── Wellcome Data Science Ideathon - Proposal.pdf # Proposal <br />
+     ├── Wellcome Data Science Ideathon - Budget.pdf # Budget <br />
+     ├── Hypatia_Presentation.pdf # Presentation <br />
 
 # Team members
 [Joseph Barnby](https://pure.royalholloway.ac.uk/en/persons/joseph-barnby) (Royal Holloway, University of London) <br />

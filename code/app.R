@@ -8,6 +8,9 @@ library(patchwork)
 library(shinythemes)
 library(bslib)
 library(rstan)
+library(devtools)
+
+#install_github('WellcomeIdeathon2023',subdir='Hypatia_Simple_Mental_Health_Modelling/code/shinyStanModels')
 
 source("RLmodel_fitting.R")
 

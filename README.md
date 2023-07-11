@@ -20,10 +20,10 @@ This repository was originally maintained and monitored by Wellcome staff and wi
      ├── Budget <br />
 
 # Team members
-Joseph Barnby (Royal Holloway, University of London)
-Alex Pike (University of York)
-Lei Zhang (University of Birmingham)
-Catia Oliveira (University of York)
+Joseph Barnby (Royal Holloway, University of London) <br />
+Alex Pike (University of York) <br />
+Lei Zhang (University of Birmingham) <br />
+Catia Oliveira (University of York) <br />
 
 # LICENCE
 

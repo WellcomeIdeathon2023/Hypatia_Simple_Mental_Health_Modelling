@@ -21,7 +21,6 @@ ui <- fluidPage(
 
     tabsetPanel(
 
-
 # Simulate data -----------------------------------------------------------
 
       tabPanel('Simulate data',
@@ -36,15 +35,12 @@ ui <- fluidPage(
                   sep="<br/>")))),
         br(),
 
-        sidebarLayout(
-            sidebarPanel(
-              class="pull-left",
-              downloadButton('downloadData', 'Download Data')
-            ),
-
-        mainPanel(
-          )
-        ),
+        #sidebarLayout(
+        #    ,
+#
+        #mainPanel(
+        #  )
+        #),
 
         br(),
 
@@ -81,7 +77,8 @@ ui <- fluidPage(
                             max = 1,
                             value = 0.8,
                             step = 0.1),
-               br()
+                br(),
+                downloadButton('downloadData', 'Download Data')
             ),
 
             # Show a plot of the generated distribution
@@ -163,7 +160,8 @@ ui <- fluidPage(
       ),
     ),
 
-    titlePanel(h5(HTML(paste("CC <a href='https://www.joebarnby.com/'>Team Hypatia</a> 2023"))))
+    hr(),
+    p("CC Team Hypatia 2023", style = "text-align: center;")
 
 )
 
@@ -272,22 +270,23 @@ server <- function(input, output) {
           pivot_longer(cols = 1:2, names_to = 'Option', values_to = 'Q') %>%
 
           ggplot(aes(Trial, Q, color = Option))+
-          geom_line()+
-          geom_line(aes(Trial, ProbA1), linetype = 2, color = 'black')+
+          geom_line(size = 1.1)+
+          geom_line(aes(Trial, ProbA1), linetype = 2, color = 'black', size = 1)+
           geom_hline(yintercept = c(1-input$winprob, input$winprob),
                      color = defcols,
                      linetype = 2, alpha = 0.2)+
           coord_cartesian(ylim = c(0,1))+
           scale_color_brewer(palette = 'Set1')+
           labs(y = expression(paste('Q'[c]^t, '    &    p(' ,hat(c), '= c)')))+
-          scale_y_continuous(breaks = seq(0, 1, 0.2), labels = seq(0, 1, 0.2))+
+          scale_y_continuous(breaks = seq(0, 1, 0.2), labels = seq(0, 1, 0.2), expand = c(0,0))+
+          scale_x_continuous(expand = c(0,0))+
           theme_bw() +
           theme(text = element_text(size = 20),
-                axis.title = element_text(size = 20),
+                axis.title = element_text(size = 20, face = 'bold'),
                 axis.text = element_text(size = 20),
                 legend.title = element_blank(),
-                legend.text = element_text(size = 20),
-                legend.position = c(0.9, 0.1),
+                legend.text = element_text(size = 20, face = 'bold'),
+                legend.position = c(0.15, 0.1),
                 legend.background = element_rect(color = 'black'))
 
         subplot <- data.frame(Action = a, Reward = r) %>%
@@ -298,12 +297,13 @@ server <- function(input, output) {
                  ActionS2 = sum(Action2),
                  RewardS  = sum(Reward)) %>%
           dplyr::select(ActionS1, ActionS2, RewardS) %>%
-          rename(`Card 1 Choices` = 1, `Card 2 Choices` = 2, `Rewards`= 3) %>%
+          rename(`Card 1` = 1, `Card 2` = 2, `Reward`= 3) %>%
           distinct() %>%
           pivot_longer(cols = 1:3, names_to = 'Index', values_to = 'Value') %>%
           ggplot(aes(Index, Value))+
           geom_col(fill = c(defcols, "#FFB302"), color = 'black')+
           coord_cartesian(ylim = c(0, trials))+
+          scale_y_continuous(expand = c(0,0))+
           labs(title = 'Sum of...')+
           theme_bw() +
           theme(text = element_text(size = 20),

@@ -1,7 +1,7 @@
 # Hypatia: Health modelling made simple <img src="https://github.com/WellcomeIdeathon2023/Hypatia_Simple_Mental_Health_Modelling/blob/main/results/hypatia_logo.JPG" align="right" width="250px">
 
 
-Our solution for the Wellcome Data Science Ideathon mental health challenge. 
+Our solution for the [Wellcome Data Science Ideathon](https://wellcome.org/grant-funding/schemes/ideathon) mental health challenge. 
 This is your private repository for working on the challenges in the Wellcome Data Science Ideathon.
 
 This repository was originally maintained and monitored by Wellcome staff and will made public after July 13 2023.
@@ -20,7 +20,10 @@ This repository was originally maintained and monitored by Wellcome staff and wi
      ├── Budget <br />
 
 # Team members
-Joseph Barnby, Alex Pike, Lei Zhang, Catia Oliveira
+Joseph Barnby (Royal Holloway, University of London) <br />
+Alex Pike (University of York) <br />
+Lei Zhang (University of Birmingham) <br />
+Catia Oliveira (University of York) <br />
 
 # LICENCE
 

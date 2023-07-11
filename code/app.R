@@ -376,7 +376,7 @@ server <- function(input, output) {
         reward=reward,
         choices=choice)
 
-      opt_result2 <- sampling(model,data,chains=input$n_chain,iter=input$n_samp)
+      opt_result2 <- rstan::sampling(object = shinyStanModels:::stanmodels[["fit_1a1b"]],data,chains=input$n_chain,iter=input$n_samp)
       parameters<-summary(opt_result2, pars=c('alpha','beta'))$summary[,1]
       loglik<-summary(opt_result2, pars=c('loglik'))$summary[,1]
       rhat<-summary(opt_result2, pars=c('alpha','beta'))$summary[,10] #rhat of just param estimates

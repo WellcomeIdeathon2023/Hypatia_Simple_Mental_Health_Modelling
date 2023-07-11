@@ -1,0 +1,13 @@
+name: Hypatia
+title: Hypatia
+username:
+account: alexpike
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9439282
+bundleId: 7443486
+url: https://alexpike.shinyapps.io/Hypatia/
+when: 1689069568.98624
+lastSyncTime: 1689069568.98626
+asMultiple: FALSE
+asStatic: FALSE

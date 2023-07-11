@@ -31,3 +31,11 @@ loglik<-summary(fit, pars=c('loglik'))$summary[,1]
 rhat<-summary(fit, pars=c('alpha','beta'))$summary[,10] #rhat of just param estimates
 trace<-traceplot(fit,pars='lp__')
 fit_summary<-list(pars=parameters,value=loglik,rhat=rhat,trace=trace)
+
+
+#setting up package
+## initialize R-package
+rstantools::rstan_create_package(
+  path = "",
+  stan_files = "fit_1a1b.stan"
+)

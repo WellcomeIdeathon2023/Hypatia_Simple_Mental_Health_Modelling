@@ -33,7 +33,7 @@ ui <- fluidPage(
                       "Here the agent is placed in an environment where it learns about the value of two cards.
                       On each trial it samples a card to learn whether it gained a reward.")))),
         titlePanel(h4(HTML(paste("Move the sliders to change the task structure and agent policy.",
-                  "Click 'Select a new agent' to start a new agent from scratch using the same settings",
+                  "Click 'Select a new agent' to start a new agent from scratch using the same settings.",
                   sep="<br/>")))),
         br(),
 
@@ -54,7 +54,7 @@ ui <- fluidPage(
                 br(),
                 h3('Task parameters'),
                 sliderInput("trials",
-                            "Task Length:",
+                            "Task Length (trials):",
                             min = 50,
                             max = 500,
                             value = 100,

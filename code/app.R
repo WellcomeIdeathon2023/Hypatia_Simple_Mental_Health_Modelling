@@ -271,23 +271,27 @@ server <- function(input, output) {
 
           ggplot(aes(Trial, Q, color = Option))+
           geom_line(size = 1.1)+
-          geom_line(aes(Trial, ProbA1), linetype = 2, color = 'black', size = 1)+
+          geom_line(aes(Trial, ProbA1, linetype = 'p(Action)'),color = 'black', size = 1)+
           geom_hline(yintercept = c(1-input$winprob, input$winprob),
                      color = defcols,
                      linetype = 2, alpha = 0.2)+
           coord_cartesian(ylim = c(0,1))+
-          scale_color_brewer(palette = 'Set1')+
-          labs(y = expression(paste('Q'[c]^t, '    &    p(' ,hat(c), '= c)')))+
+          scale_color_brewer(palette = 'Set1', name = 'Q Values')+
+          scale_linetype_manual(name = '', values = 2)+
+          labs(title = 'Trial-by-Trial Outcomes')+
           scale_y_continuous(breaks = seq(0, 1, 0.2), labels = seq(0, 1, 0.2), expand = c(0,0))+
           scale_x_continuous(expand = c(0,0))+
           theme_bw() +
-          theme(text = element_text(size = 20),
-                axis.title = element_text(size = 20, face = 'bold'),
-                axis.text = element_text(size = 20),
-                legend.title = element_blank(),
-                legend.text = element_text(size = 20, face = 'bold'),
-                legend.position = c(0.15, 0.1),
-                legend.background = element_rect(color = 'black'))
+          theme(text = element_text(size = 20, family="Helvetica-Narrow"),
+                axis.title = element_text(size = 20, face = 'bold', family="Helvetica-Narrow"),
+                axis.text = element_text(size = 20, family="Helvetica-Narrow"),
+                axis.title.y = element_blank(),
+                legend.box = "horizontal",
+                legend.position = "bottom",
+                #legend.title = element_blank(),
+                legend.text = element_text(size = 20, face = 'bold', family="Helvetica-Narrow"),
+                #legend.position = c(0.15, 0.1),
+                legend.background = element_blank())
 
         subplot <- data.frame(Action = a, Reward = r) %>%
           na.omit() %>%
@@ -304,10 +308,10 @@ server <- function(input, output) {
           geom_col(fill = c(defcols, "#FFB302"), color = 'black')+
           coord_cartesian(ylim = c(0, trials))+
           scale_y_continuous(expand = c(0,0))+
-          labs(title = 'Sum of...')+
+          labs(title = 'Average Sum of...')+
           theme_bw() +
-          theme(text = element_text(size = 20),
-                plot.title = element_text(face = 'bold', vjust = -6, hjust = 0.05),
+          theme(text = element_text(size = 20, family="Helvetica-Narrow"),
+                #plot.title = element_text(face = 'bold', vjust = -6, hjust = 0.05),
                 axis.title = element_blank(),
                 axis.text = element_text(size = 20))
 #
